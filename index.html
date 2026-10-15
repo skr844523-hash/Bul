@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b16"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Money Empire"><title>Money Empire — إمبراطورية المال</title>
+<style>
+:root{--bg:#070b16;--card:#111a30;--c2:#1a2644;--gold:#f5c542;--g2:#b8860b;--tx:#f2ead3;--mut:#8f9ab3;--ok:#4ade80;--bad:#f87171;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f6f1e3;--card:#fffaf0;--c2:#f0e6cb;--tx:#1b1608;--mut:#6b6247;--gold:#a87908;--ok:#15803d;--bad:#b91c1c}}
+:root[data-theme="light"]{--bg:#f6f1e3;--card:#fffaf0;--c2:#f0e6cb;--tx:#1b1608;--mut:#6b6247;--gold:#a87908;--ok:#15803d;--bad:#b91c1c}
+:root[data-theme="dark"]{--bg:#070b16;--card:#111a30;--c2:#1a2644;--tx:#f2ead3;--mut:#8f9ab3;--gold:#f5c542;--ok:#4ade80;--bad:#f87171}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font-family:"Cairo","Segoe UI",Tahoma,sans-serif;overflow:hidden;user-select:none}
+#app{height:100%;display:flex;flex-direction:column;max-width:560px;margin:auto}
+main{flex:1;overflow-y:auto;padding:12px 12px 90px}
+h2{margin:8px 0;color:var(--gold);font-size:17px}
+.card{background:var(--card);border:1px solid #f5c54222;border-radius:16px;padding:11px;margin-bottom:9px}
+.row{display:flex;align-items:center;gap:9px}.sp{flex:1}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.st b{display:block;font-size:16px;color:var(--gold)}small,.mut{color:var(--mut);font-size:12px}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:9px 13px;background:linear-gradient(135deg,var(--gold),var(--g2));color:#1b1200;font-weight:700}
+button:active{transform:scale(.96)}button:disabled{opacity:.4}button.alt{background:var(--c2);color:var(--tx)}
+input{font:inherit;width:100%;padding:10px;border-radius:10px;border:1px solid #f5c54244;background:var(--c2);color:var(--tx);user-select:text}
+nav{position:fixed;bottom:0;left:0;right:0;max-width:560px;margin:auto;display:flex;background:var(--card);border-top:1px solid #f5c54233;padding:5px 2px calc(5px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;min-width:0;background:none;color:var(--mut);padding:3px;font-size:10.5px}nav button.on{color:var(--gold)}nav span{display:block;font-size:20px}
+.bar{height:8px;background:var(--c2);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--g2),var(--gold))}
+.bub{padding:9px 12px;border-radius:14px;margin:6px 0;max-width:90%;line-height:1.6;white-space:pre-line}.me{background:var(--gold);color:#1b1200;margin-inline-start:auto}.ai{background:var(--c2)}
+#splash{position:fixed;inset:0;z-index:99;background:radial-gradient(circle at 50% 35%,#1b2a55,#070b16 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f5c542;transition:opacity .5s}
+#splash svg{width:120px;animation:pop 1s both}@keyframes pop{from{transform:scale(.3) translateY(30px);opacity:0}}
+#splash .bar{width:200px;margin-top:20px;background:#ffffff1a}
+.toast{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--gold);color:#1b1200;padding:8px 16px;border-radius:20px;font-weight:700;z-index:80;text-align:center}
+.fl{position:fixed;color:var(--gold);font-weight:800;pointer-events:none;animation:up .8s forwards;z-index:40;text-shadow:0 1px 4px #000}@keyframes up{to{transform:translateY(-60px);opacity:0}}
+.ni .fl{display:none}
+#tap{width:100%;font-size:21px;padding:20px;margin:6px 0 4px;box-shadow:0 0 24px #f5c54255}
+#modal{position:fixed;inset:0;background:#000a;z-index:70;display:flex;align-items:center;justify-content:center;padding:20px}
+#modal>div{background:var(--card);border:1px solid var(--gold);border-radius:18px;padding:18px;max-width:340px;width:100%}
+.up{color:var(--ok)}.dn{color:var(--bad)}canvas{width:100%;display:block;border-radius:14px}
+</style></head><body>
+<div id="splash"><svg viewBox="0 0 100 80"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#b8860b"/></linearGradient></defs><path d="M8 66 L14 22 L34 44 L50 12 L66 44 L86 22 L92 66 Z" fill="url(#g)"/><rect x="8" y="68" width="84" height="9" rx="3" fill="url(#g)"/><text x="50" y="60" text-anchor="middle" font-size="26" font-weight="900" fill="#070b16">$</text></svg>
+<h1 style="margin:12px 0 0">إمبراطورية المال</h1><div style="letter-spacing:4px">MONEY EMPIRE</div><div class="bar"><i id="sp" style="width:0"></i></div></div>
+<div id="app"><main id="v"></main><nav id="nav"></nav></div><div id="mod"></div><div id="auth"></div>
+<script type="module" src="./cloud.js"></script>
+<script>
+const $=s=>document.querySelector(s),R=Math.random;
+const CO=[["🍔","مطعم",15,.5],["🏪","متجر",120,3],["🏭","مصنع",1100,16],["💻","شركة تقنية",12e3,90],["🏢","عقارات",130e3,520],["🚗","سيارات",1.4e6,3100],["⚡","طاقة",2e7,21e3],["🏦","بنك افتراضي",3.3e8,160e3],["🌍","شركة عالمية",5.1e9,1.3e6]];
+const COL=["#e8743b","#3b9ae8","#8a8f9c","#9b5de5","#2ec4b6","#e63946","#ffd166","#06d6a0","#f5c542"];
+const UP=[["🖱️","قوة النقرة",50,2.4],["📈","كفاءة الإدارة +10% دخل",500,3],["🤝","شبكة علاقات +15% دخل",15e3,4]];
+const AS=[["📜","سندات",100,.004],["📊","أسهم",50,.03],["₿","عملات رقمية",20,.09]];
+const AC=[["a1","أول شركة","اشترِ أول مستوى",s=>s.lv.some(x=>x)],["a2","ألفية","اجمع 1,000",s=>s.total>=1e3],["a3","مليونير","اجمع مليون",s=>s.total>=1e6],["a4","رجل أعمال","5 أنواع شركات",s=>s.lv.filter(x=>x).length>=5],["a5","تاجر","اكسب من الاستثمار",s=>s.pr>0],["a6","ملك الكومبو","اوصل كومبو x5",s=>s.cb5],["a7","وُلدت من جديد","نفّذ إعادة الميلاد",s=>s.crowns>0]];
+const Q=[["اجمع 10,000",s=>s.total>=1e4,500],["اشترِ 10 مستويات",s=>s.lv.reduce((a,b)=>a+b,0)>=10,2000],["انقر 100 مرة",s=>s.clicks>=100,400],["امتلك 3 أنواع شركات",s=>s.lv.filter(x=>x).length>=3,1500]];
+const AB=["","ألف","مليون","مليار","تريليون","كوادريليون"];
+const fmt=n=>{n=Math.floor(n);if(n<1e3)return n+"";let i=Math.min(5,Math.floor(Math.log10(n)/3));return(n/Math.pow(1e3,i)).toFixed(2).replace(/\.?0+$/,"")+" "+AB[i]};
+const DEF=()=>({name:"Zjzj Jejs",av:"👑",cash:10,total:10,lv:CO.map(_=>0),up:[0,0,0],crowns:0,hold:[0,0,0],px:AS.map(a=>a[2]),pr:0,t:Date.now(),done:{},cl:{},clicks:0,rush:0,cd:0,best:0,streak:0,lastDay:"",boostEnd:0,bcd:0,set:{sfx:true,music:false,motion:true,theme:"auto"}});
+let S;try{S={...DEF(),...JSON.parse(localStorage.getItem("me2")||"{}")};S.set={...DEF().set,...S.set}}catch(e){S=DEF()}
+const save=()=>{try{localStorage.setItem("me2",JSON.stringify(S))}catch(e){}};
+const pm=()=>(1+.1*S.crowns)*(Date.now()<S.boostEnd?3:1),mult=()=>(1+.1*S.up[1])*(1+.15*S.up[2])*pm();
+const cost=(i,n=S.lv[i])=>Math.ceil(CO[i][2]*Math.pow(1.15,n)),uc=i=>Math.ceil(UP[i][2]*Math.pow(UP[i][3],S.up[i]));
+const inc=i=>CO[i][3]*S.lv[i]*mult()*(1+Math.floor(S.lv[i]/25)*.5),ips=()=>CO.reduce((a,_,i)=>a+inc(i),0);
+let comb=1,lastTap=0,rush=null,tab="home",sub="co",modalOpen=false;
+const clickP=()=>(1+S.up[0]*2)*(1+ips()*.02)*pm();
+const lvl=s=>1+Math.floor(Math.log10(Math.max(1,s.total))*2.2);
+const hv=()=>S.hold.reduce((a,h,i)=>a+h*S.px[i],0);
+const net=()=>S.cash+hv()+S.lv.reduce((a,l,i)=>{let t=0;for(let k=0;k<l;k++)t+=cost(i,k)*.5;return a+t},0);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let A;try{A=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}
+function beep(f=660,d=.07,v=.05){if(!S.set.sfx||!A)return;try{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)}catch(e){}}
+const NOTES=[262,330,392,523,392,330];let ni=0;setInterval(()=>{if(S.set.music&&!document.hidden)beep(NOTES[ni++%6]/2,.5,.018)},700);
+function toast(t){const e=document.createElement("div");e.className="toast";e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2400)}
+function gain(x){S.cash+=x;S.total+=x;if(rush)rush.e+=x}
+function ach(){AC.forEach(a=>{if(!S.done[a[0]]&&a[3](S)){S.done[a[0]]=1;toast("🏆 إنجاز: "+a[1]);beep(1300,.2)}})}
+function tap(e){const n=Date.now();comb=n-lastTap<1100?Math.min(5,comb+.25):1;lastTap=n;if(comb>=5)S.cb5=1;const p=clickP()*Math.floor(comb*4)/4;gain(p);S.clicks++;beep(400+comb*80,.03);
+if(S.set.motion){const f=document.createElement("div");f.className="fl";f.textContent="+"+fmt(p);f.style.left=(e.clientX-20)+"px";f.style.top=(e.clientY-30)+"px";document.body.appendChild(f);setTimeout(()=>f.remove(),800)}ach();live()}
+function buy(i){const c=cost(i);if(S.cash<c)return;S.cash-=c;S.lv[i]++;beep(880);ach();save();render()}
+function bup(i){const c=uc(i);if(S.cash<c)return;S.cash-=c;S.up[i]++;beep(990);save();render()}
+function claim(i){if(S.cl[i]||!Q[i][1](S))return;S.cl[i]=1;gain(Q[i][2]);beep(1200);save();render()}
+function trade(i,buyIt){const p=S.px[i];if(buyIt){const q=S.cash*.25/p;if(q*p<1)return;S.cash-=q*p;S.hold[i]+=q;S["c"+i]=(S["c"+i]||0)+q*p}else{const v=S.hold[i]*p;if(v<=0)return;const c=S["c"+i]||0;S.pr+=v-c;S.cash+=v;S.hold[i]=0;S["c"+i]=0;toast(v>=c?"ربحت "+fmt(v-c):"خسارة "+fmt(c-v))}beep(700);ach();save();render()}
+function startRush(){if(Date.now()<S.cd||rush)return;const t=clickP()*80+ips()*36;rush={e:0,end:Date.now()+30000,t};toast("بدأ التحدي! 30 ثانية");render()}
+function endRush(){const w=rush.e>=rush.t,r=rush.t*.6;if(w){S.cash+=r;S.total+=r}S.best=Math.max(S.best,rush.e);S.cd=Date.now()+180000;toast(w?"🔥 نجحت! جائزة "+fmt(r):"انتهى الوقت: لم تصل للهدف");rush=null;save();render()}
+function rebirth(){const c=Math.floor(Math.sqrt(net()/1e6));if(c<1)return;if(!confirm("إعادة الميلاد: ستحصل على "+c+" 👑 (+"+c*10+"% دخل دائم) وتبدأ من الصفر. متابعة؟"))return;const d=DEF();Object.assign(S,{...d,name:S.name,av:S.av,set:S.set,done:S.done,best:S.best,crowns:S.crowns+c});ach();save();render()}
+function event(){if(modalOpen||document.hidden||S.cash<100||tab==="ai")return;const c=Math.floor(S.cash*.2),p=.45+R()*.2,m=2+R()*1.5;modalOpen=true;
+$("#mod").innerHTML=`<div id="modal"><div><h2>💼 فرصة تجارية</h2><p>شريك يعرض صفقة بتكلفة <b>${fmt(c)}</b>. احتمال النجاح ${Math.round(p*100)}%، والعائد x${m.toFixed(1)}. الخسارة = المبلغ.</p><div class="row"><button class="sp" onclick="deal(${c},${p},${m})">اقبل</button><button class="sp alt" onclick="closeM()">ارفض</button></div></div></div>`}
+function boost(){if(Date.now()<S.bcd)return;S.boostEnd=Date.now()+20000;S.bcd=Date.now()+120000;toast("⚡ طاقة x3 لمدة 20 ثانية");beep(1500,.2);save();render()}
+function dailyCheck(){const k=new Date().toISOString().slice(0,10);if(S.lastDay===k)return;const y=new Date(Date.now()-864e5).toISOString().slice(0,10);S.streak=S.lastDay===y?S.streak+1:1;S.lastDay=k;const r=Math.floor(Math.max(200,ips()*300)*Math.min(S.streak,7));modalOpen=true;
+$("#mod").innerHTML=`<div id="modal"><div><h2>🎁 مكافأة اليوم</h2><p>سلسلة الدخول: <b>${S.streak}</b> يوم (تزيد المكافأة حتى 7 أيام)</p><p>مكافأتك: <b>${fmt(r)}</b></p><button style="width:100%" onclick="gain(${r});closeM();save();render()">استلم</button></div></div>`}
+function closeM(){modalOpen=false;$("#mod").innerHTML=""}
+function deal(c,p,m){closeM();if(S.cash<c)return;S.cash-=c;if(R()<p){gain(c*m);toast("✅ نجحت الصفقة! +"+fmt(c*m))}else toast("❌ فشلت الصفقة: -"+fmt(c));beep(R()<p?1000:200,.2);save();render()}
+let chat=[{ai:1,t:"أنا مستشار محلي يعتمد على قواعد اللعبة وبياناتك الفعلية، وليس ذكاءً اصطناعيًا متصلًا. اختر سؤالًا:"}];
+function adv(k){const T=s=>s<60?Math.ceil(s)+" ث":s<3600?Math.ceil(s/60)+" د":(s/3600).toFixed(1)+" س";const r=ips();
+const all=CO.map((c,i)=>({i,c:cost(i),pay:cost(i)/(c[3]*mult()*(1+Math.floor((S.lv[i]+1)/25)*.5))})).sort((a,b)=>a.pay-b.pay);let m;
+if(k==="best"){const b=all[0];m=`أفضل شراء: ${CO[b.i][0]} ${CO[b.i][1]} بسعر ${fmt(b.c)} ويسترد نفسه خلال ${T(b.pay)}.\n`+(S.cash>=b.c?"تقدر تشتريه الآن ✅":"ناقصك "+fmt(b.c-S.cash)+(r>0?" (≈"+T((b.c-S.cash)/r)+")":""))}
+else if(k==="pay")m=all.slice(0,5).map(x=>`${CO[x.i][0]} ${CO[x.i][1]}: ${fmt(x.c)} | استرداد ${T(x.pay)}`).join("\n");
+else if(k==="weak"){const o=S.lv.map((l,i)=>l?{i,v:inc(i)/l}:0).filter(Boolean).sort((a,b)=>a.v-b.v);m=o.length?`أضعف شركة: ${CO[o[0].i][0]} ${CO[o[0].i][1]} (${o[0].v.toFixed(1)}/ث لكل مستوى).`:"لا تملك شركات بعد. ابدأ بالمطعم 🍔"}
+else if(k==="inv"){m=`الاستثمارات الآن:\n`+AS.map((a,i)=>`${a[0]} ${a[1]}: ${S.px[i].toFixed(1)} | تذبذب ${a[3]*100}%`).join("\n")+"\nالعملات الرقمية أعلى مخاطرة. لا تستثمر ما تحتاجه لشراء شركة.";}
+else m=`المستوى ${lvl(S)} | الرصيد ${fmt(S.cash)} | الثروة ${fmt(net())} | الدخل ${fmt(r)}/ث | تيجان ${S.crowns}`+(Math.floor(Math.sqrt(net()/1e6))>0?"\nتقدر تعمل إعادة ميلاد الآن.":"");
+chat.push({t:"سؤالك"},{ai:1,t:m});render()}
+const TB=[["home","🏙️","مدينتي"],["biz","🏢","الأعمال"],["inv","📈","استثمار"],["ch","🔥","تحديات"],["rk","🏆","الصدارة"],["ai","🤖","المستشار"],["me","👤","حسابي"]];
+function city(){const c=$("#cv");if(!c)return;const w=c.width=c.clientWidth*2,h=c.height=260,x=c.getContext("2d");
+const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,"#0b1230");g.addColorStop(1,"#27355f");x.fillStyle=g;x.fillRect(0,0,w,h);
+x.fillStyle="#fff8";for(let i=0;i<40;i++)x.fillRect((i*97)%w,(i*53)%120,2,2);x.fillStyle="#f5c542";x.beginPath();x.arc(w-60,50,20,0,7);x.fill();
+const sw=w/9;CO.forEach((c2,i)=>{const l=S.lv[i];if(!l)return;const bh=30+Math.min(170,l*5+Math.sqrt(l)*14),bw=sw-8,bx=i*sw+4,by=h-20-bh;x.fillStyle=COL[i];x.fillRect(bx,by,bw,bh);x.fillStyle="#0006";x.fillRect(bx+bw*.6,by,bw*.4,bh);
+for(let y=by+8;y<h-30;y+=14)for(let xx=bx+6;xx<bx+bw-8;xx+=12){x.fillStyle=(xx*y)%7<4?"#ffe27a":"#0004";x.fillRect(xx,y,6,8)}
+x.font="22px serif";x.textAlign="center";x.fillText(c2[0],bx+bw/2,by-4)});
+x.fillStyle="#0a0f20";x.fillRect(0,h-20,w,20);if(!S.lv.some(a=>a)){x.fillStyle="#f5c542";x.font="26px sans-serif";x.textAlign="center";x.fillText("اشترِ أول شركة لتبني مدينتك",w/2,h/2)}}
+function live(){const e=$("#cash");if(!e)return;e.textContent=fmt(S.cash);$("#net").textContent=fmt(net());$("#ips").textContent=fmt(ips())+"/ث";const cb=$("#cb");if(cb)cb.textContent="كومبو x"+(Math.floor(comb*4)/4);
+const bs=$("#bst");if(bs){const l=Math.ceil((S.bcd-Date.now())/1e3);bs.disabled=l>0;bs.textContent=l>0?(Date.now()<S.boostEnd?"⚡ فعّالة "+Math.ceil((S.boostEnd-Date.now())/1e3)+"ث":"⚡ متاحة بعد "+l+"ث"):"⚡ تفعيل طاقة x3 (20ث)"}const rb=$("#rb");if(rb&&rush)rb.textContent=`⏱ ${Math.max(0,Math.ceil((rush.end-Date.now())/1e3))}ث | ${fmt(rush.e)} / ${fmt(rush.t)}`}
+function lbHtml(){const L=window.LB||[],me=window.Cloud&&Cloud.uid(),T=["ملك المال","أمير الثروة","نبيل الأعمال"];const k=L.findIndex(p=>p.id===me);
+return `<h2>🏆 لوحة الصدارة العالمية</h2><div class="row"><small class="sp">${k>=0?"ترتيبك: #"+(k+1)+(k>0?" • الفارق عن السابق "+fmt(L[k-1].wealth-L[k].wealth):""):(L.length?"خارج أفضل 100":"")}</small><button onclick="Cloud.top100().then(render)">تحديث</button></div><div style="height:8px"></div>`+(L.length?L.map((p,i)=>`<div class="card row" style="${p.id===me?"border-color:var(--gold)":""}"><b style="width:30px">${["🥇","🥈","🥉"][i]||i+1}</b><span style="font-size:22px">${esc(p.avatar||"👑")}</span><div class="sp"><b dir="ltr">${esc(p.name||"?")}</b>${i<3?` <small style="color:var(--gold)">${T[i]}</small>`:""}<br><small>مستوى ${p.level} • ${fmt(p.income)}/ث</small></div><b style="color:var(--gold)">${fmt(p.wealth)}</b></div>`).join(""):`<p class="mut">اضغط تحديث لتحميل الترتيب. لا توجد بيانات وهمية: تظهر هنا فقط حسابات اللاعبين الحقيقية.</p>`)}
+function render(){document.documentElement.dataset.theme=S.set.theme==="auto"?"":S.set.theme;if(S.set.theme==="auto")document.documentElement.removeAttribute("data-theme");document.body.classList.toggle("ni",!S.set.motion);
+$("#nav").innerHTML=TB.map(t=>`<button class="${tab===t[0]?"on":""}" onclick="tab='${t[0]}';render()"><span>${t[1]}</span>${t[2]}</button>`).join("");let h="";
+if(tab==="home")h=`<div class="card row"><div style="font-size:34px">${S.av}</div><div><small>أهلًا بك في إمبراطوريتك،</small><br><b style="color:var(--gold)" dir="ltr">${esc(S.name)} 👑</b></div><div class="sp"></div><small>المستوى<br><b style="color:var(--gold);font-size:18px">${lvl(S)}</b></small></div>
+<canvas id="cv" style="height:130px"></canvas>
+<div class="grid" style="margin-top:8px"><div class="card st"><small>الرصيد</small><b id="cash"></b></div><div class="card st"><small>الثروة</small><b id="net"></b></div><div class="card st"><small>أرباح/ثانية</small><b id="ips"></b></div><div class="card st"><small>التيجان 👑</small><b>${S.crowns} (+${S.crowns*10}%)</b></div></div>
+<button id="tap" onclick="tap(event)">💰 اجمع الأرباح (+${fmt(clickP())})</button><div class="mut" style="text-align:center" id="cb">كومبو x1</div><small class="mut" style="display:block;text-align:center">انقر بسرعة لرفع الكومبو حتى x5</small><div style="height:8px"></div><button id="bst" class="alt" style="width:100%" onclick="boost()">⚡ تفعيل طاقة x3 (20ث)</button>`;
+if(tab==="biz")h=`<div class="row"><button class="sp ${sub==="co"?"":"alt"}" onclick="sub='co';render()">الشركات</button><button class="sp ${sub==="up"?"":"alt"}" onclick="sub='up';render()">الترقيات</button></div><div style="height:8px"></div>`+(sub==="co"?CO.map((c,i)=>`<div class="card row"><div style="font-size:28px">${c[0]}</div><div class="sp"><b>${c[1]}</b> <small>م${S.lv[i]}</small><br><small>${fmt(inc(i))}/ث • مكافأة +50% كل 25 مستوى</small></div><button ${S.cash<cost(i)?"disabled":""} onclick="buy(${i})">${S.lv[i]?"طوّر":"اشترِ"}<br><small style="color:#1b1200">${fmt(cost(i))}</small></button></div>`).join(""):UP.map((u,i)=>`<div class="card row"><div style="font-size:26px">${u[0]}</div><div class="sp"><b>${u[1]}</b><br><small>مستوى ${S.up[i]}</small></div><button ${S.cash<uc(i)?"disabled":""} onclick="bup(${i})">${fmt(uc(i))}</button></div>`).join(""));
+if(tab==="inv")h=`<h2>الاستثمارات (أصول افتراضية)</h2><p class="mut">الأسعار تتذبذب عشوائيًا ويمكن أن تخسر. اشترِ بـ25% من رصيدك، وبيع كل ما تملك.</p>`+AS.map((a,i)=>{const d=S.px[i]/a[2]-1;return`<div class="card"><div class="row"><span style="font-size:26px">${a[0]}</span><b class="sp">${a[1]}</b><b id="p${i}">${S.px[i].toFixed(2)}</b></div><small>تملك ${S.hold[i].toFixed(2)} (قيمتها ${fmt(S.hold[i]*S.px[i])}) • تذبذب ${a[3]*100}%</small><div class="row" style="margin-top:6px"><button class="sp" onclick="trade(${i},1)">اشترِ 25%</button><button class="sp alt" onclick="trade(${i},0)">بِع الكل</button></div></div>`}).join("")+`<small class="mut">صافي أرباح التداول: ${S.pr>=0?"+":""}${fmt(Math.abs(S.pr))}</small>`;
+if(tab==="ch"){const rs=rush?"":(Date.now()<S.cd?`متاح بعد ${Math.ceil((S.cd-Date.now())/1e3)}ث`:"");
+h=`<h2>🔥 تحدي السرعة</h2><div class="card"><p>اجمع <b>${fmt(rush?rush.t:clickP()*80+ips()*36)}</b> خلال 30 ثانية واربح 60% منها كجائزة. أفضل رقم لك: ${fmt(S.best)}</p>${rush?`<div id="rb" style="color:var(--gold);font-weight:800"></div><button id="tap" onclick="tap(event)">💰 انقر!</button>`:`<button ${rs?"disabled":""} onclick="startRush()">${rs||"ابدأ التحدي"}</button>`}</div>
+<h2>👑 إعادة الميلاد</h2><div class="card"><p>ابدأ من جديد مقابل تيجان تزيد الدخل 10% لكل تاج. عند ثروتك الحالية تحصل على <b>${Math.floor(Math.sqrt(net()/1e6))}</b> تاج. (يبدأ من ثروة مليون)</p><button ${Math.floor(Math.sqrt(net()/1e6))<1?"disabled":""} onclick="rebirth()">ابدأ من جديد</button></div>
+<h2>المهام</h2>`+Q.map((q,i)=>`<div class="card row"><span class="sp">${q[0]} <small>+${fmt(q[2])}</small></span><button ${S.cl[i]||!q[1](S)?"disabled":""} onclick="claim(${i})">${S.cl[i]?"تم":"استلم"}</button></div>`).join("")+`<h2>الإنجازات</h2>`+AC.map(a=>`<div class="card row"><span style="font-size:22px">${S.done[a[0]]?"🏅":"🔒"}</span><div><b>${a[1]}</b><br><small>${a[2]}</small></div></div>`).join("")+`<small class="mut">تظهر أيضًا صفقات مفاجئة كل دقيقة تقريبًا.</small>`}
+if(tab==="rk")h=lbHtml();if(tab==="ai")h=`<h2>Empire AI — مستشار الإمبراطورية</h2><div id="chat" style="max-height:50vh;overflow:auto">${chat.map(m=>`<div class="bub ${m.ai?"ai":"me"}">${esc(m.t)}</div>`).join("")}</div><div class="row" style="flex-wrap:wrap;margin-top:8px">${[["best","أفضل شراء؟"],["pay","قارن الاسترداد"],["weak","أضعف شركة؟"],["inv","الاستثمارات"],["sum","ملخص"]].map(b=>`<button class="alt" onclick="adv('${b[0]}')">${b[1]}</button>`).join("")}</div>`;
+if(tab==="me"){const s=S.set;h=`<h2>الملف الشخصي</h2><div class="card"><div style="font-size:46px;text-align:center">${S.av}</div><div class="row" style="justify-content:center;margin:6px 0">${["👑","🦁","🚀","💎","🦅"].map(a=>`<button class="alt" onclick="S.av='${a}';save();render()">${a}</button>`).join("")}</div><input dir="ltr" value="${esc(S.name)}" maxlength="24" onchange="S.name=this.value.trim()||'Zjzj Jejs';save();render()"><p class="mut">المستوى ${lvl(S)} • الثروة ${fmt(net())} • إنجازات ${Object.keys(S.done).length}/${AC.length}</p></div><h2>الإعدادات</h2>`+[["music","الموسيقى"],["sfx","المؤثرات الصوتية"],["motion","الحركة والمؤثرات"]].map(k=>`<div class="card row"><span class="sp">${k[1]}</span><button class="${s[k[0]]?"":"alt"}" onclick="S.set.${k[0]}=!S.set.${k[0]};save();render()">${s[k[0]]?"مفعّل":"متوقف"}</button></div>`).join("")+`<div class="card row"><span class="sp">المظهر</span>${["auto","dark","light"].map(t=>`<button class="${s.theme===t?"":"alt"}" onclick="S.set.theme='${t}';save();render()">${{auto:"تلقائي",dark:"داكن",light:"فاتح"}[t]}</button>`).join("")}</div><div class="card"><button class="alt" onclick="window.Cloud&&Cloud.logout()">تسجيل الخروج</button></div><div class="card">${window.__ip?`<button onclick="__ip.prompt()">📲 ثبّت التطبيق</button>`:`<small>للتثبيت: في Chrome ⋮ ← «تثبيت التطبيق». وفي iPhone من Safari: مشاركة ← «إضافة إلى الشاشة الرئيسية».</small>`}</div><div class="card row"><span class="sp mut">v3.0 • حفظ محلي على جهازك • لوحة الصدارة العالمية تحتاج Firebase RTDB</span><button class="alt" onclick="if(confirm('مسح كل التقدم؟')){localStorage.removeItem('me2');location.reload()}">إعادة ضبط</button></div>`}
+$("#v").innerHTML=h;live();city();const c=$("#chat");if(c)c.scrollTop=1e9}
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();window.__ip=e});
+const away=Math.min(8*3600,(Date.now()-S.t)/1e3);if(away>30&&ips()>0){const g=away*ips()*.5;S.cash+=g;S.total+=g;setTimeout(()=>toast("أرباح غيابك: +"+fmt(g)),1700)}
+setInterval(()=>{const d=ips()/10;if(d>0)gain(d);if(Date.now()-lastTap>1500)comb=Math.max(1,comb-.1);if(rush&&Date.now()>=rush.end)endRush();live()},100);
+setInterval(()=>{AS.forEach((a,i)=>{S.px[i]=Math.max(1,S.px[i]*(1+(R()-.5)*2*a[3]+.0003));const e=$("#p"+i);if(e)e.textContent=S.px[i].toFixed(2)})},2000);
+setInterval(()=>{S.t=Date.now();ach();save();city();window.Cloud&&Cloud.sync()},5000);setInterval(event,60000);
+setInterval(()=>{if(R()<.5&&!document.hidden){const i=(R()*3)|0,b=R()<.5,f=1+(b?1:-1)*(.12+R()*.1*(i+1));S.px[i]=Math.max(1,S.px[i]*f);toast("📰 "+(b?"ارتفاع":"هبوط")+" مفاجئ في "+AS[i][1]+" "+Math.round(Math.abs(f-1)*100)+"%")}},40000);
+addEventListener("pagehide",save);document.addEventListener("visibilitychange",()=>{if(document.hidden)save()});
+document.addEventListener("click",()=>{if(A&&A.state==="suspended")A.resume()},{once:true});
+window.GAME={get S(){return S},net,ips,lvl,render};render();let p=0;const si=setInterval(()=>{p+=25;$("#sp").style.width=p+"%";if(p>=100){clearInterval(si);$("#splash").style.opacity=0;setTimeout(()=>{$("#splash").remove();toast("أهلًا بك في إمبراطوريتك، "+S.name+" 👑");dailyCheck()},500)}},200);
+</script></body></html>
