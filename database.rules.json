@@ -1,0 +1,80 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "players": {
+      ".indexOn": ["wealth", "income"],
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['name','avatar','wealth','income','level','ts'])",
+        "name": {".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"},
+        "avatar": {".validate": "newData.isString() && newData.val().length <= 8"},
+        "level": {".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 200"},
+        "income": {".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1e12"},
+        "ally": {".validate": "newData.isString() && newData.val().length <= 30"},
+        "ts": {".validate": "newData.val() === now && (!data.exists() || now - data.val() >= 4000)"},
+        "wealth": {".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= (data.exists() ? data.val() : 1000) + ((data.parent().child('ts').exists() ? (now - data.parent().child('ts').val()) / 1000 : 0) + 5) * (newData.parent().child('income').val() * 1.5 + 50)"},
+        "$other": {".validate": false}
+      }
+    },
+    "alliances": {
+      ".read": "auth != null",
+      "$aid": {
+        ".write": "auth != null && ((!data.exists() && newData.child('leader').val() === auth.uid) || data.child('leader').val() === auth.uid)",
+        "name": {".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 20"},
+        "tag": {".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 4"},
+        "emoji": {".validate": "newData.isString() && newData.val().length <= 8"},
+        "leader": {".validate": "newData.isString()"},
+        "ts": {".validate": "data.exists() || newData.val() === now"},
+        "members": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && (!newData.exists() || (root.child('alliances/' + $aid + '/name').exists() && (data.exists() || root.child('alliances/' + $aid + '/members').numChildren() < 20)))",
+            ".validate": "newData.hasChildren(['name','avatar','wealth','income','level'])",
+            "name": {".validate": "newData.isString() && newData.val().length <= 24"},
+            "avatar": {".validate": "newData.isString() && newData.val().length <= 8"},
+            "wealth": {".validate": "newData.isNumber() && newData.val() >= 0"},
+            "income": {".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1e12"},
+            "level": {".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 200"},
+            "$other": {".validate": false}
+          }
+        },
+        "$other": {".validate": false}
+      }
+    },
+    "chat": {
+      "$aid": {
+        ".read": "auth != null && root.child('alliances/' + $aid + '/members/' + auth.uid).exists()",
+        "$m": {
+          ".write": "auth != null && !data.exists() && root.child('alliances/' + $aid + '/members/' + auth.uid).exists() && newData.child('uid').val() === auth.uid",
+          ".validate": "newData.hasChildren(['uid','name','text','ts'])",
+          "uid": {".validate": "newData.isString()"},
+          "name": {".validate": "newData.isString() && newData.val().length <= 24"},
+          "text": {".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 80"},
+          "ts": {".validate": "newData.val() === now"},
+          "$other": {".validate": false}
+        }
+      }
+    },
+    "cool": {
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.val() === now && (!data.exists() || now - data.val() >= 30000)"
+      }
+    },
+    "attacks": {
+      "$t": {
+        ".read": "auth != null && auth.uid === $t",
+        "$id": {
+          ".write": "auth != null && ((!data.exists() && $t !== auth.uid && newData.child('from').val() === auth.uid && newData.root.child('cool/' + auth.uid).val() === now && (root.child('players/' + auth.uid + '/ally').val() === null || root.child('players/' + auth.uid + '/ally').val() !== root.child('players/' + $t + '/ally').val())) || (auth.uid === $t && !newData.exists()))",
+          ".validate": "newData.hasChildren(['from','fromName','type','ts'])",
+          "from": {".validate": "newData.isString()"},
+          "fromName": {".validate": "newData.isString() && newData.val().length <= 24"},
+          "type": {".validate": "newData.val() === 'warn' || newData.val() === 'sabotage'"},
+          "ts": {".validate": "newData.val() === now"},
+          "$other": {".validate": false}
+        }
+      }
+    }
+  }
+}
